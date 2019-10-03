@@ -22,12 +22,12 @@ bằng foreground service. Foreground service phải hiển thị một **Notifi
 
 - **Bound service**: cung cấp 1 giao diện Client - Server cho phép các thành phần tương tác với nó: gửi yêu cầu, nhận kết quả và thậm chí là IPC (inter-process communication) - giao tiếp qua nhiều tiến trình
 
-<img src="https://images.viblo.asia/5210d9be-e4a0-430b-8e7f-dd37c47e0678.png" width="290">
+<img src="https://images.viblo.asia/5210d9be-e4a0-430b-8e7f-dd37c47e0678.png" width="450">
 
 ### 3. Sơ đồ hoạt động
 
 
-<img src="https://o7planning.org/vi/10421/cache/images/i/1172852.png" width="350">
+<img src="https://o7planning.org/vi/10421/cache/images/i/1172852.png" width="450">
 
 
 ### 4. Unbounded service (foreground + background service)
@@ -80,7 +80,7 @@ Mỗi lần gọi startService() thì trong onStartCommand có paremater startId
 
 Kiểu mô hình client - server.
 
-<img src="https://images.viblo.asia/5210d9be-e4a0-430b-8e7f-dd37c47e0678.png" width="290">
+<img src="https://images.viblo.asia/5210d9be-e4a0-430b-8e7f-dd37c47e0678.png" width="450">
 
 Client sẽ là các đối tượng gọi bind tới service
 
