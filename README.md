@@ -16,19 +16,7 @@ Service chạy trong main thread của process chứa nó (process có thể ch�
 
 Vì thế nếu bạn muốn thực hiện 1 tác vụ nặng, tốn CPU, đợi kết quả, ... như nghe nhạc hoặc mạng, nên tạo 1 thread trong service để làm những việc đó, tránh lỗi ARN
 
-### 2. Thời điểm bị kill
-
-Hệ thống Android stop một service chỉ khi bộ nhớ thấp và cần dùng cho activity cần focus:
-
-- 1 service gắn với activity đang được focus, nó ít có khả năng bị kill
-
-- 1 service chạy foreground, nó hiếm khi bị kill
-
-- 1 service đã chạy lâu, được started thì dễ bị kill
-
-### 2. Service vs Thread
-
-### 3. Có 3 loại service
+### 2. Phân loại service
 
 - **Foreground service**: thực hiện một số thao tác người dùng **có thể chú ý**, thấy rõ ràng
 Ví dụ như một ứng dụng chơi nhạc, download, ... có thể thực hiện nhiệm vụ và control nó
@@ -40,11 +28,20 @@ bằng foreground service. Foreground service phải hiển thị một **Notifi
 
 <img src="https://images.viblo.asia/5210d9be-e4a0-430b-8e7f-dd37c47e0678.png" width="650">
 
-### 4. Sơ đồ hoạt động
+### 3. Sơ đồ hoạt động
 
 
 <img src="https://o7planning.org/vi/10421/cache/images/i/1172852.png" width="650">
 
+### 4. Thời điểm bị kill
+
+Hệ thống Android stop một service chỉ khi bộ nhớ thấp và cần dùng cho activity cần focus:
+
+- 1 service gắn với activity đang được focus, nó ít có khả năng bị kill
+
+- 1 service chạy foreground, nó hiếm khi bị kill
+
+- 1 service đã chạy lâu, được started thì dễ bị kill
 
 ### 5. Unbounded service (foreground + background service)
 
@@ -197,15 +194,21 @@ Tham khảo: https://en.wikipedia.org/wiki/Reference_counting)
 
 + Không nên bind, unbind trong **onResume()**, **onPause()**
 
-### 7. Process vs Thread
+### 7. Service vs Thread
 
-- Process: nằm ở mức hệ thống, kiểm soát bởi hệ thống:
+- Service là một thành phần của android 
+
+
+### 8. Process vs Thread
+
+- **Process**: nằm ở mức hệ thống, kiểm soát bởi hệ thống:
 
 + Khi ứng dụng chạy, hệ thống tạo ra 1 process và ứng dụng sẽ được chạy và quản lý trong process đó. 
 
 + Mỗi process sẽ có tài nguyên, bộ nhớ độc lập với nhau
 
-- Thread: ở mức ứng dụng:
+
+- **Thread**: ở mức ứng dụng:
 
 + Khi một process được tạo, ứng dụng bên trong đó có thể tạo nhiều thread khác nhau. Đầu tiên, 1 thread sẽ được tạo ra, gọi là "main". Thread này sẽ chịu trách nhiệm vẽ, nhận sự kiện, tương tác với Android UI toolkit, .... Thread main này còn được gọi là UI thread. 
 
