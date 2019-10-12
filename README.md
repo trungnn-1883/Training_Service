@@ -6,17 +6,13 @@
 
 Là 1 thành phần của Android, tạo bởi hệ thống có thể thực hiện các hoạt động lâu dài trong background và không cung cấp giao diện người dùng, có thể hoạt động khi ứng dụng bị hủy
 
-Tương tác với service qua:
-
-- Một thành phần khác start nó
-
-- Một thành phần khác liên kết (bind) với nó
-
 Service chạy trong main thread của process chứa nó (process có thể chứa nhiều thread). Service không tạo 1 thread riêng của nó cũng như không chạy trong 1 process độc lập trừ khi bạn tạo ra. Nó sẽ chạy trong Main UI Thread. 
 
-Vì thế nếu bạn muốn thực hiện 1 tác vụ nặng, tốn CPU, đợi kết quả, ... như nghe nhạc hoặc mạng, nên tạo 1 thread trong service để làm những việc đó, tránh lỗi ARN
+Vì thế nếu bạn muốn thực hiện 1 tác vụ nặng, tốn CPU, đợi kết quả, ... như nghe nhạc hoặc mạng, nên tạo 1 thread trong service để làm những việc đó, tránh lỗi ARN.
 
 ### 2. Phân loại service
+
+Trước kia người ta thường chia làm 2 loại Started Service và Bound Service. Nhưng giờ đã có cách phân loại mới như sau.
 
 - **Foreground service**: thực hiện một số thao tác người dùng **có thể chú ý**, thấy rõ ràng
 Ví dụ như một ứng dụng chơi nhạc, download, ... có thể thực hiện nhiệm vụ và control nó
@@ -26,38 +22,17 @@ bằng foreground service. Foreground service phải hiển thị một **Notifi
 
 - **Bound service**: cung cấp 1 giao diện Client - Server cho phép các thành phần tương tác với nó: gửi yêu cầu, nhận kết quả và thậm chí là IPC (inter-process communication) - giao tiếp qua nhiều tiến trình
 
-<img src="https://images.viblo.asia/5210d9be-e4a0-430b-8e7f-dd37c47e0678.png" width="650">
+<img src="https://codingwithmitch.s3.amazonaws.com/static/blog/9/open_bluetooth_connection.png" width="650">
 
-### 3. Sơ đồ hoạt động
-
-
-<img src="https://o7planning.org/vi/10421/cache/images/i/1172852.png" width="650">
-
-### 4. Thời điểm bị kill
-
-Hệ thống Android stop một service chỉ khi bộ nhớ thấp và cần dùng cho activity cần focus:
-
-- 1 service gắn với activity đang được focus, nó ít có khả năng bị kill
-
-- 1 service chạy foreground, nó hiếm khi bị kill
-
-- 1 service đã chạy lâu, được started thì dễ bị kill
-
-### 5. Unbounded service (foreground + background service)
+### 3. Unbounded service (foreground + background service)
 
 ### a. Sử dụng
 
-Để chạy một tác vụ lâu dài, có thể ko cần ràng buộc với thành phần giao diện kể cả khi thành phần đó bị hủy. ở Android 8.0 đang giới hạn cho service chạy nền, nhưng việc sử dụng vẫn tương tự
+Để chạy một tác vụ lâu dài, có thể ko cần ràng buộc với thành phần giao diện kể cả khi thành phần đó bị hủy. Ở Android 8.0 đang giới hạn cho service chạy nền, nhưng việc sử dụng vẫn tương tự
 
 ### b. Vòng đời
 
 <img src="https://o7planning.org/vi/10421/cache/images/i/1174191.png" width="350">
-
-Gọi bằng startService() hoặc startForeGroundService() - sử dụng bắt đầu ở Android 8.0
-
-Vòng đời startService -> onCreate -> onStartCommand
-
-Sau khi đã startService rồi thì khi gọi lại sẽ vào onStartCommand
 
 Có các cờ trả về của hàm onStartCommand:
 
@@ -81,19 +56,25 @@ Mỗi lần gọi startService() thì trong onStartCommand có paremater startId
 
 ### d. Lưu ý
 
-- Một context gọi startService(), nếu service đó chưa được tạo sẽ gọi onCreate() -> onStartCommand()
+- Start service bằng startService() hoặc startForeGroundService() - sử dụng bắt đầu ở Android 8.0
 
-- Nếu một context khác (service, activity, broadcast, ...) gọi tới service mà service đó đã chạy -> chỉ có onStartCommand() được gọi
+- Sau khi đã startService rồi thì những lần sau khi gọi lại chạy sẽ vào onStartCommand
+
+- Một context gọi startService():
+
++ Nếu service đó chưa được tạo sẽ gọi onCreate() -> onStartCommand()
+
++ Nếu service đó đã được tạo -> ko gọi onCreate mà gọi onStartCommand() luôn
 
 => Start bao lần thì chỉ có duy nhất 1 instance của service được tạo ra
 
-### 6. Bound service
+### 4. Bound service
 
 ### a. Sử dụng
 
 Kiểu mô hình client - server.
 
-<img src="https://images.viblo.asia/5210d9be-e4a0-430b-8e7f-dd37c47e0678.png" width="650">
+<img src="https://codingwithmitch.s3.amazonaws.com/static/blog/9/open_bluetooth_connection.png" width="650">
 
 Client sẽ là các đối tượng gọi bind tới service
 
@@ -101,7 +82,7 @@ Server chính là service, ở đây sẽ thực hiện các tác vụ, rồi tr
 
 ### b. Vòng đời
 
-<img src="https://o7planning.org/vi/10421/cache/images/i/1172852.png" width="650">
+<img src="https://pasteboard.co/IBz68sk.png" width="650">
 
 ### c. Cách khởi tạo
 
@@ -131,7 +112,7 @@ class PlayMusicService : Service() {
     
 ```
 
-- **Sử dụng Messenger**: giúp làm việc giữa các tiến trình với nhau. Service định nghĩa Handler mà đáp lại tới mỗi loại Message khác nhau. Handler này là nền tảng cho Messenger có thể chia sẻ IBinder với client, cho phép client gửi lệnh tới service sử dụng Message. Service cũng có thể gửi message cho client khi client cũng định nghĩa 1 Messenger của chính nó.
+- **Sử dụng Messenger**: giúp làm việc giữa các process với nhau. Service định nghĩa Handler mà đáp lại tới mỗi loại Message khác nhau. Handler này là nền tảng cho Messenger có thể chia sẻ IBinder với client, cho phép client gửi lệnh tới service sử dụng Message. Service cũng có thể gửi message cho client khi client cũng định nghĩa 1 Messenger của chính nó.
 
 Đây là cách đơn giản nhất để thực hiện giao tiếp liên tiến trình (IPC), bởi vì Messager sắp hàng toàn bộ request vào một thread duy nhất vì thế bạn sẽ không phải thiết kế service dạng thread-safe (đồng bộ request - chỉ cho duy nhất 1 request truy suất vào tại 1 thời điểm)
 
@@ -168,6 +149,7 @@ class MessengerService : Service() {
 }
 
     // Tạo đối tượng ServiceConnection bên client để lấy đối tượng mIbinder rồi sử dụng
+    
 ```
 
 - **Sử dụng AIDL** (Android Interface Definition Language): chia nhỏ đối tượng thành dạng nguyên thủy mà hệ điều hành có thể hiểu được và sắp vào các process để thực hiện IPC. Messenger ở trên là dựa trên AIDL, nhưng chỉ là ở trong 1 thread. AIDL có thể thực hiện multi-thread, nhưng service phải là dạng thread-safe.
@@ -194,12 +176,17 @@ Tham khảo: https://en.wikipedia.org/wiki/Reference_counting)
 
 + Không nên bind, unbind trong **onResume()**, **onPause()**
 
-### 7. Service vs Thread
+### 5. Thời điểm bị kill
 
-- Service là một thành phần của android 
+Hệ thống Android stop một service chỉ khi bộ nhớ thấp và cần dùng cho activity cần focus:
 
+- 1 service gắn với activity đang được focus, nó ít có khả năng bị kill
 
-### 8. Process vs Thread
+- 1 service chạy foreground, nó hiếm khi bị kill
+
+- 1 service đã chạy lâu, được started thì dễ bị kill
+
+### 6. Process vs Thread
 
 - **Process**: nằm ở mức hệ thống, kiểm soát bởi hệ thống:
 
@@ -215,6 +202,14 @@ Tham khảo: https://en.wikipedia.org/wiki/Reference_counting)
 + Thread chỉ hoạt động bên trong giới hạn của process, chia sẻ tài nguyên trong 1 process. 
 
 Việc tạo ra multi-process hay multi-thread, người lập trình có thể quy định. Tuy nhiên phải xem xét cho kĩ lưỡng.
+
+
+
+------------------------------------------------------------------------
+
+Tham khảo: https://developer.android.com/guide/components/services
+
+
 
 
 
