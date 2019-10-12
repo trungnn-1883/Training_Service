@@ -22,8 +22,6 @@ bằng foreground service. Foreground service phải hiển thị một **Notifi
 
 - **Bound service**: cung cấp 1 giao diện Client - Server cho phép các thành phần tương tác với nó: gửi yêu cầu, nhận kết quả và thậm chí là IPC (inter-process communication) - giao tiếp qua nhiều tiến trình
 
-<img src="https://codingwithmitch.s3.amazonaws.com/static/blog/9/open_bluetooth_connection.png" width="650">
-
 ### 3. Unbounded service (foreground + background service)
 
 ### a. Sử dụng
@@ -62,9 +60,9 @@ Mỗi lần gọi startService() thì trong onStartCommand có paremater startId
 
 - Một context gọi startService():
 
-+ Nếu service đó chưa được tạo sẽ gọi onCreate() -> onStartCommand()
+Nếu service đó chưa được tạo sẽ gọi onCreate() -> onStartCommand()
 
-+ Nếu service đó đã được tạo -> ko gọi onCreate mà gọi onStartCommand() luôn
+Nếu service đó đã được tạo -> ko gọi onCreate mà gọi onStartCommand() luôn
 
 => Start bao lần thì chỉ có duy nhất 1 instance của service được tạo ra
 
@@ -82,7 +80,7 @@ Server chính là service, ở đây sẽ thực hiện các tác vụ, rồi tr
 
 ### b. Vòng đời
 
-<img src="https://pasteboard.co/IBz68sk.png" width="650">
+<img src="https://cdn1.imggmi.com/uploads/2019/10/12/c35c109c14875cd05ecfef4d8b1df3f5-full.png" width="350">
 
 ### c. Cách khởi tạo
 
@@ -170,11 +168,11 @@ Tham khảo: https://en.wikipedia.org/wiki/Reference_counting)
 
 - Nên binding và unbinding theo thời điểm đối ngược nhau trong vòng đời của client, như:
 
-+ Bind khi **onStart()**, unbind khi **onStop()**. Dùng khi tương tác với service khi activity đang được nhìn thấy
+Bind khi **onStart()**, unbind khi **onStop()**. Dùng khi tương tác với service khi activity đang được nhìn thấy
 
-+ Bind khi **onCreate()**, unbind khi **onDestroy()**. Dùng khi tương tác với service kể cả khi nó đang chạy background. Nên cẩn thận khi sử dụng vì service sẽ chạy toàn bộ thời gian activity chạy (kể cả dưới background).
+Bind khi **onCreate()**, unbind khi **onDestroy()**. Dùng khi tương tác với service kể cả khi nó đang chạy background. Nên cẩn thận khi sử dụng vì service sẽ chạy toàn bộ thời gian activity chạy (kể cả dưới background).
 
-+ Không nên bind, unbind trong **onResume()**, **onPause()**
+- Không nên bind, unbind trong **onResume()**, **onPause()**
 
 ### 5. Thời điểm bị kill
 
@@ -190,16 +188,16 @@ Hệ thống Android stop một service chỉ khi bộ nhớ thấp và cần d�
 
 - **Process**: nằm ở mức hệ thống, kiểm soát bởi hệ thống:
 
-+ Khi ứng dụng chạy, hệ thống tạo ra 1 process và ứng dụng sẽ được chạy và quản lý trong process đó. 
+Khi ứng dụng chạy, hệ thống tạo ra 1 process và ứng dụng sẽ được chạy và quản lý trong process đó. 
 
-+ Mỗi process sẽ có tài nguyên, bộ nhớ độc lập với nhau
+Mỗi process sẽ có tài nguyên, bộ nhớ độc lập với nhau
 
 
 - **Thread**: ở mức ứng dụng:
 
-+ Khi một process được tạo, ứng dụng bên trong đó có thể tạo nhiều thread khác nhau. Đầu tiên, 1 thread sẽ được tạo ra, gọi là "main". Thread này sẽ chịu trách nhiệm vẽ, nhận sự kiện, tương tác với Android UI toolkit, .... Thread main này còn được gọi là UI thread. 
+Khi một process được tạo, ứng dụng bên trong đó có thể tạo nhiều thread khác nhau. Đầu tiên, 1 thread sẽ được tạo ra, gọi là "main". Thread này sẽ chịu trách nhiệm vẽ, nhận sự kiện, tương tác với Android UI toolkit, .... Thread main này còn được gọi là UI thread. 
 
-+ Thread chỉ hoạt động bên trong giới hạn của process, chia sẻ tài nguyên trong 1 process. 
+Thread chỉ hoạt động bên trong giới hạn của process, chia sẻ tài nguyên trong 1 process. 
 
 Việc tạo ra multi-process hay multi-thread, người lập trình có thể quy định. Tuy nhiên phải xem xét cho kĩ lưỡng.
 
